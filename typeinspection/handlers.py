@@ -1,6 +1,7 @@
 import ast
 import os
-from typing import List, Optional, Tuple
+from types import get_original_bases
+from typing import List, Optional, Tuple, get_args
 
 
 class HandlerVisitor(ast.NodeVisitor):
@@ -84,3 +85,24 @@ def gethandledtypes(handler):
     handled_types = function_visitor.matches
 
     return zip_type_names(module_name, handled_types)
+
+
+def get_base_type(target):
+    bases = get_original_bases(target.__class__)
+    args = get_args(bases[0])
+
+    module_name = args[0].__module__
+    class_name = args[0].__name__
+
+    return f"{module_name}.{class_name}"
+
+
+def get_super_type(target):
+    bases = get_original_bases(target.__class__)
+    supers = get_original_bases(bases[0])
+    args = get_args(supers[0])
+
+    module_name = args[0].__module__
+    class_name = args[0].__name__
+
+    return f"{module_name}.{class_name}"
