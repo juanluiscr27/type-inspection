@@ -87,6 +87,13 @@ def gethandledtypes(handler):
     return zip_type_names(module_name, handled_types)
 
 
+def get_base_name(target):
+    bases = get_original_bases(target.__class__)
+    args = get_args(bases[0])
+
+    return args[0].__name__
+
+
 def get_base_type(target):
     bases = get_original_bases(target.__class__)
     args = get_args(bases[0])
@@ -95,6 +102,14 @@ def get_base_type(target):
     class_name = args[0].__name__
 
     return f"{module_name}.{class_name}"
+
+
+def get_super_name(target):
+    bases = get_original_bases(target.__class__)
+    supers = get_original_bases(bases[0])
+    args = get_args(supers[0])
+
+    return args[0].__name__
 
 
 def get_super_type(target):
