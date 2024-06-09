@@ -1,6 +1,20 @@
 # Changelog
 
 All notable changes to type inspect will be documented in this file.
+## 0.4.0 (2024-06-09)
+
+### Added
+
+- function to get the fully qualified name of handle types
+
+### Changed
+
+- handled types function tu return only a list on type names
+
+## 0.3.0 (2024-05-26)
+
+### Added
+- function to return name of a base type and a super type
 
 ## 0.2.0 (2024-05-18)
 
