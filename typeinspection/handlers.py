@@ -1,4 +1,5 @@
 import ast
+import inspect
 import os
 from types import get_original_bases
 from typing import List, Optional, Tuple, get_args
@@ -88,9 +89,8 @@ def getfull_handledtypes(handler):
 
 
 def gethandledtypes(handler):
-    module_name = handler.__module__
     class_name = handler.__name__
-    module_path = _get_abs_path(module_name)
+    module_path = os.path.realpath(inspect.getfile(handler))
 
     with open(module_path, encoding="UTF-8") as file:
         code = file.read()
