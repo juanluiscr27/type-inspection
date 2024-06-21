@@ -1,6 +1,17 @@
 # Changelog
 
 All notable changes to type inspect will be documented in this file.
+
+## 0.5.0 (2024-06-20)
+
+### Added
+
+- test for handle types function
+
+### Changed
+
+- get handled types function to use real path and inspect get file
+
 ## 0.4.0 (2024-06-09)
 
 ### Added
