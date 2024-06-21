@@ -53,13 +53,6 @@ class FunctionVisitor(ast.NodeVisitor):
         ast.NodeVisitor.generic_visit(self, node)
 
 
-def _get_abs_path(module_name: str):
-    rel_path = "/".join(module_name.split("."))
-    file_path = f"{rel_path}.py"
-
-    return os.path.abspath(file_path)
-
-
 def zip_type_names(module_name: str, types: Tuple[str, ...]):
     return [f"{module_name}.{type_name}" for type_name in types]
 
@@ -67,7 +60,7 @@ def zip_type_names(module_name: str, types: Tuple[str, ...]):
 def getfull_handledtypes(handler):
     module_name = handler.__module__
     class_name = handler.__name__
-    module_path = _get_abs_path(module_name)
+    module_path = os.path.realpath(inspect.getfile(handler))
 
     with open(module_path, encoding="UTF-8") as file:
         code = file.read()
