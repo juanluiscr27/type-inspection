@@ -4,7 +4,7 @@ from functools import singledispatchmethod
 from typing import Generic, List, TypeVar, Optional
 from uuid import UUID
 
-from typeinspection import gethandledtypes
+from typeinspection import get_handled_types
 from typeinspection.handlers import get_super_name
 
 
@@ -63,7 +63,7 @@ class Projector(Generic[TProjection]):
 
     @property
     def handles(self) -> List[str]:
-        return gethandledtypes(type(self.projection))
+        return get_handled_types(type(self.projection))
 
 
 TEntity = TypeVar("TEntity")
@@ -112,6 +112,7 @@ class Users(Repository[User]):
     def find_all(self) -> List[User]:
         ...
 
+
 class TestUsers(Users):
     """Test User Repository Implementation"""
 
@@ -141,6 +142,7 @@ def test_projector_handles_projection_events():
 
     # Assert
     assert result == expected
+
 
 def test_repository_with_aggregates():
     # Arrange
