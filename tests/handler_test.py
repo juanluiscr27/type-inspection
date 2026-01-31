@@ -1,11 +1,11 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from types import get_original_bases
-from typing import Generic, List, TypeVar, get_args
+from typing import Generic, List, TypeVar, Optional
 from uuid import UUID
 
 from typeinspection import gethandledtypes
+from typeinspection.handlers import get_super_name
 
 
 @dataclass(frozen=True)
@@ -33,7 +33,8 @@ class Projection(ABC):
 
 class UserDetailsProjection(Projection):
 
-    def get_position(self, entity_id: UUID, event_type: str) -> int:
+    # noinspection PyMethodMayBeStatic
+    def get_position(self, _: UUID, __: str) -> int:
         return 1
 
     def update_position(self, entity_id: UUID, event_type: str, position: int) -> None:
@@ -65,6 +66,68 @@ class Projector(Generic[TProjection]):
         return gethandledtypes(type(self.projection))
 
 
+TEntity = TypeVar("TEntity")
+
+
+class Repository(ABC, Generic[TEntity]):
+    """Repository Generic Abstract Base class
+
+    The Repository Interface defines the operations on an entity of type `TEntity`.
+    """
+
+    @property
+    def aggregate_type(self) -> str:
+        """Returns the qualified name of the entity this repository is based on"""
+        return get_super_name(self)
+
+
+@dataclass(frozen=True)
+class UserID:
+    value: int
+
+
+class User:
+
+    def __init__(self, user_id: UserID, name):
+        super().__init__(user_id, 0)
+        self.name: str = name
+
+
+class Users(Repository[User]):
+    """User Repository Interface"""
+
+    @abstractmethod
+    def save(self, user: User) -> int:
+        ...
+
+    @abstractmethod
+    def find_by_id(self, user_id: UserID) -> Optional[UserID]:
+        ...
+
+    @abstractmethod
+    def find_by_slug(self, slug: str) -> Optional[UserID]:
+        ...
+
+    @abstractmethod
+    def find_all(self) -> List[User]:
+        ...
+
+class TestUsers(Users):
+    """Test User Repository Implementation"""
+
+    def save(self, user: User) -> int:
+        pass
+
+    def find_by_id(self, user_id: UserID) -> Optional[UserID]:
+        pass
+
+    def find_by_slug(self, slug: str) -> Optional[UserID]:
+        pass
+
+    def find_all(self) -> List[User]:
+        pass
+
+
 def test_projector_handles_projection_events():
     # Arrange
     expected = ["UserRegistered", "UserNameUpdated"]
@@ -78,3 +141,13 @@ def test_projector_handles_projection_events():
 
     # Assert
     assert result == expected
+
+def test_repository_with_aggregates():
+    # Arrange
+    expected = "User"
+
+    # Act
+    users = TestUsers()
+
+    # Assert
+    assert users.aggregate_type == expected
