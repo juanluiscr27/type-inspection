@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "typeinspection"
+version = "0.5.0"
+description = "Get class names and fully qualified names of Python classes"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "Juan Luis Casanova", email = "juanluiscr27@hotmail.com" }
+]
+keywords = ["type", "inspection", "class", "names"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+testing = [
+    "pytest==8.1.1",
+    "wheel==0.43.0",
+    "setuptools==69.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/juanluiscr27"
+
+[tool.hatch.build.targets.wheel]
+packages = ["typeinspection"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/typeinspection",
+    "/tests",
+    "/CHANGELOG.md",
+    "/LICENSE",
+    "/README.md",
+]
