@@ -2,6 +2,18 @@
 
 All notable changes to type inspect will be documented in this file.
 
+## 0.6.0 (2026-01-31)
+
+### Added
+
+- test for get super name function
+- type hints to all functions
+
+### Changed
+
+- BREAKING: function names with a standard format to imply semantic
+- build tool chain to UV
+
 ## 0.5.0 (2024-06-20)
 
 ### Added
@@ -31,8 +43,8 @@ All notable changes to type inspect will be documented in this file.
 
 ### Added
 
-- function to get the base type of a generic class from the implementation using introspection.
-- function to get the super type of a generic class from the implementation using introspection.
+- function to get the base type of generic class from the implementation using introspection.
+- function to get the super type of generic class from the implementation using introspection.
 
 ## 0.1.0 (2024-05-07)
 

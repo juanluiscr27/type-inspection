@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "typeinspection"
-version = "0.5.0"
+version = "0.6.0"
 description = "Get class names and fully qualified names of Python classes"
 readme = "README.md"
 requires-python = ">=3.12"
