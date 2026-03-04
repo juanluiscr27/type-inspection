@@ -20,12 +20,20 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "mypy>=1.19.1",
+    "ruff>=0.15.4",
+]
 
 [project.optional-dependencies]
 testing = [
     "pytest==9.0.2",
     "wheel==0.46.3",
     "setuptools==80.10.2",
+]
+dev = [
+    "ruff>=0.9",
+    "mypy>=1.14",
 ]
 
 [project.urls]
@@ -42,3 +50,30 @@ include = [
     "/LICENSE",
     "/README.md",
 ]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "F",      # Pyflakes
+    "E", "W", # pycodestyle errors/warnings
+    "I",      # isort (import ordering)
+    "N",      # pep8-naming
+    "UP",     # pyupgrade
+    "B",      # flake8-bugbear
+    "A",      # flake8-builtins shadowing
+    "SIM",    # flake8-simplify
+    "TCH",    # flake8-type-checking
+    "RUF",    # Ruff-specific rules
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_configs = true

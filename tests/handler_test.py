@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import Generic, List, TypeVar, Optional
+from typing import TypeVar
 from uuid import UUID
 
 from typeinspection import get_handled_types
@@ -27,12 +27,11 @@ class UserNameUpdated(DomainEvent):
     previous_name: str
 
 
-class Projection(ABC):
+class Projection(ABC):  # noqa: B024
     pass
 
 
 class UserDetailsProjection(Projection):
-
     # noinspection PyMethodMayBeStatic
     def get_position(self, _: UUID, __: str) -> int:
         return 1
@@ -56,20 +55,19 @@ class UserDetailsProjection(Projection):
 TProjection = TypeVar("TProjection", bound=Projection)
 
 
-class Projector(Generic[TProjection]):
-
-    def __init__(self, projection: TProjection):
+class Projector[TProjection]:
+    def __init__(self, projection: TProjection) -> None:
         self.projection = projection
 
     @property
-    def handles(self) -> List[str]:
+    def handles(self) -> list[str]:
         return get_handled_types(type(self.projection))
 
 
 TEntity = TypeVar("TEntity")
 
 
-class Repository(ABC, Generic[TEntity]):
+class Repository[TEntity](ABC):  # noqa: B024
     """Repository Generic Abstract Base class
 
     The Repository Interface defines the operations on an entity of type `TEntity`.
@@ -87,9 +85,8 @@ class UserID:
 
 
 class User:
-
-    def __init__(self, user_id: UserID, name):
-        super().__init__(user_id, 0)
+    def __init__(self, user_id: UserID, name: str) -> None:
+        super().__init__()
         self.name: str = name
 
 
@@ -97,20 +94,16 @@ class Users(Repository[User]):
     """User Repository Interface"""
 
     @abstractmethod
-    def save(self, user: User) -> int:
-        ...
+    def save(self, user: User) -> int: ...
 
     @abstractmethod
-    def find_by_id(self, user_id: UserID) -> Optional[UserID]:
-        ...
+    def find_by_id(self, user_id: UserID) -> UserID | None: ...
 
     @abstractmethod
-    def find_by_slug(self, slug: str) -> Optional[UserID]:
-        ...
+    def find_by_slug(self, slug: str) -> UserID | None: ...
 
     @abstractmethod
-    def find_all(self) -> List[User]:
-        ...
+    def find_all(self) -> list[User]: ...
 
 
 class TestUsers(Users):
@@ -119,13 +112,13 @@ class TestUsers(Users):
     def save(self, user: User) -> int:
         pass
 
-    def find_by_id(self, user_id: UserID) -> Optional[UserID]:
+    def find_by_id(self, user_id: UserID) -> UserID | None:
         pass
 
-    def find_by_slug(self, slug: str) -> Optional[UserID]:
+    def find_by_slug(self, slug: str) -> UserID | None:
         pass
 
-    def find_all(self) -> List[User]:
+    def find_all(self) -> list[User]:
         pass
 
 
