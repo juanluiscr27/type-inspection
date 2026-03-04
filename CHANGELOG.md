@@ -2,6 +2,12 @@
 
 All notable changes to type inspect will be documented in this file.
 
+## 0.7.0 (2026-03-03)
+
+### Added
+
+- linting and type checking
+
 ## 0.6.0 (2026-01-31)
 
 ### Added
