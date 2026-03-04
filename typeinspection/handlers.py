@@ -2,20 +2,19 @@ import ast
 import inspect
 import os
 from types import get_original_bases
-from typing import List, Optional, Tuple, get_args, Any
+from typing import Any, get_args
 
 ARGUMENT_SELF = "self"
 UTF_8_ENCODING = "UTF-8"
 
 
 class HandlerVisitor(ast.NodeVisitor):
-
-    def __init__(self, class_name: str):
+    def __init__(self, class_name: str) -> None:
         self._class_name = class_name
-        self._match: Optional[ast.AST] = None
+        self._match: ast.AST | None = None
 
     @property
-    def matched_node(self) -> Optional[ast.AST]:
+    def matched_node(self) -> ast.AST | None:
         return self._match
 
     def visit_ClassDef(self, node: ast.AST) -> Any:
@@ -27,26 +26,22 @@ class HandlerVisitor(ast.NodeVisitor):
 
 
 class FunctionVisitor(ast.NodeVisitor):
-
-    def __init__(self):
-        self._matches: List[str] = []
+    def __init__(self) -> None:
+        self._matches: list[str] = []
 
     @property
     def matches(self) -> tuple[str, ...]:
         return tuple(dict.fromkeys(self._matches))
 
-    def visit_FunctionDef(self, node: ast.FunctionDef) -> Any:
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         match node:
             case ast.FunctionDef(
-                decorator_list=[
-                    ast.Attribute(value=ast.Name(id="apply"), attr="register")
-                ]
+                decorator_list=[ast.Attribute(value=ast.Name(id="apply"), attr="register")]
             ):
                 arguments = node.args.args
-                annotations = [arg.annotation for arg in arguments if arg != ARGUMENT_SELF]
-                # noinspection PyUnresolvedReferences
+                annotations = [arg.annotation for arg in arguments if arg.arg != ARGUMENT_SELF]
                 handled_type = [
-                    annotation.id
+                    annotation.id  # type: ignore[attr-defined]
                     for annotation in annotations
                     if annotation is not None
                 ]
@@ -56,11 +51,11 @@ class FunctionVisitor(ast.NodeVisitor):
         ast.NodeVisitor.generic_visit(self, node)
 
 
-def zip_type_names(module_name: str, types: Tuple[str, ...]):
+def zip_type_names(module_name: str, types: tuple[str, ...]) -> list[str]:
     return [f"{module_name}.{type_name}" for type_name in types]
 
 
-def get_handled_qualname(handler: type) -> List[str]:
+def get_handled_qualname(handler: type) -> list[str]:
     module_name = handler.__module__
     class_name = handler.__name__
     module_path = os.path.realpath(inspect.getfile(handler))
@@ -77,14 +72,15 @@ def get_handled_qualname(handler: type) -> List[str]:
 
     function_visitor = FunctionVisitor()
 
-    function_visitor.visit(handler_node)
+    if handler_node is not None:
+        function_visitor.visit(handler_node)
 
     handled_types = function_visitor.matches
 
     return zip_type_names(module_name, handled_types)
 
 
-def get_handled_types(handler: type) -> List[str]:
+def get_handled_types(handler: type) -> list[str]:
     class_name = handler.__name__
     module_path = os.path.realpath(inspect.getfile(handler))
 
@@ -100,7 +96,8 @@ def get_handled_types(handler: type) -> List[str]:
 
     function_visitor = FunctionVisitor()
 
-    function_visitor.visit(handler_node)
+    if handler_node is not None:
+        function_visitor.visit(handler_node)
 
     handled_types = function_visitor.matches
 
@@ -111,15 +108,16 @@ def get_base_name(target: Any) -> str:
     bases = get_original_bases(target.__class__)
     args = get_args(bases[0])
 
-    return args[0].__name__
+    result: str = args[0].__name__
+    return result
 
 
 def get_base_qualname(target: Any) -> str:
     bases = get_original_bases(target.__class__)
     args = get_args(bases[0])
 
-    module_name = args[0].__module__
-    class_name = args[0].__name__
+    module_name: str = args[0].__module__
+    class_name: str = args[0].__name__
 
     return f"{module_name}.{class_name}"
 
@@ -129,7 +127,8 @@ def get_super_name(target: Any) -> str:
     supers = get_original_bases(bases[0])
     args = get_args(supers[0])
 
-    return args[0].__name__
+    result: str = args[0].__name__
+    return result
 
 
 def get_super_qualname(target: Any) -> str:
@@ -137,7 +136,7 @@ def get_super_qualname(target: Any) -> str:
     supers = get_original_bases(bases[0])
     args = get_args(supers[0])
 
-    module_name = args[0].__module__
-    class_name = args[0].__name__
+    module_name: str = args[0].__module__
+    class_name: str = args[0].__name__
 
     return f"{module_name}.{class_name}"
